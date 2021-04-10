@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SBHandlePress : MonoBehaviour, IPointerDownHandler, IDropHandler, IPointerClickHandler
+public class ScrollBarHandlePress : MonoBehaviour, IPointerDownHandler, IDropHandler, IPointerClickHandler
 {
     public MainManager mainManager;
+
     public void OnPointerDown(PointerEventData eventData)
     {
         mainManager.OnScrollBarHandlePress();

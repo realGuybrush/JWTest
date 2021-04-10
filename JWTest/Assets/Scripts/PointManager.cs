@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public partial class MainManager : MonoBehaviour
 {
-    bool addOrSelect = true;
-    int selectedPoint = -1;
+    private int selectedPoint = -1;
     public GameObject pointPrefab;
-    void AddPoint(Vector3 pos)
+
+    private void AddPoint(Vector3 pos)
     {
         points.Add(new DirectionalPointStruct
         {
@@ -20,13 +18,18 @@ public partial class MainManager : MonoBehaviour
         points[points.Count - 1].point.transform.position = pos;
         points[points.Count - 1].point.transform.eulerAngles = points[points.Count - 1].rotation;
         int index = points.Count - 1;
-        SetCubeValues(points.Count - 1, true, Color.white, 
-            -10f / (points[index].destinationTime - points[index].creationTime), 
-            true, new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime)));
+        SetCubeValues(points.Count - 1, 
+                      true, 
+                      Color.white,
+                      -10f / (points[index].destinationTime - points[index].creationTime),
+                      true, 
+                      new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime))
+                      );
     }
-    public void SelectPoint(Vector3 start)
+
+    private void SelectPoint(Vector3 mousePos)
     {
-        RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.5f, 0.5f, 0.5f), Camera.main.transform.forward, new Quaternion(), 10f);
+        RaycastHit[] hits = Physics.BoxCastAll(mousePos, new Vector3(0.15f, 0.15f, 0.15f), Camera.main.transform.forward, new Quaternion(), 10f);
         if (hits.Length > 0)
         {
             for (int i = 0; i < points.Count; i++)
@@ -42,16 +45,19 @@ public partial class MainManager : MonoBehaviour
         }
     }
 
-    void UpdateAllCubes()
+    private void UpdateAllCubes()
     {
         for (int i = 0; i < points.Count; i++)
         {
             UpdateCube(i);
         }
         if (scrolledInPause)
+        {
             scrolledInPause = false;
+        }
     }
-    void UpdateCube(int index)
+
+    private void UpdateCube(int index)
     {
         if (!paused)
         {
@@ -65,7 +71,7 @@ public partial class MainManager : MonoBehaviour
                 SetCubeValues(index, true, Color.red, 0f, true, new Vector3());
             }
         }
-        if ((manualValueChange)||!(manualValueChange||paused))
+        if ((manualScrollBarValueChange) || !(manualScrollBarValueChange || paused))
         {
             if (points[index].creationTime > currentTime)
             {
@@ -73,9 +79,13 @@ public partial class MainManager : MonoBehaviour
             }
             if ((points[index].creationTime <= currentTime) && (points[index].destinationTime > currentTime))
             {
-                SetCubeValues(index, true, Color.white,
-                    -10f / (points[index].destinationTime - points[index].creationTime),
-                    true, new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime)));
+                SetCubeValues(index,
+                              true,
+                              Color.white,
+                              -10f / (points[index].destinationTime - points[index].creationTime),
+                              true,
+                              new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime))
+                              );
             }
             if (points[index].destinationTime <= currentTime)
             {
@@ -83,12 +93,13 @@ public partial class MainManager : MonoBehaviour
             }
         }
     }
-    void SetCubeValues(int index, bool active, Color color, float velocity, bool updatePos, Vector3 newLocalPosition)
+
+    private void SetCubeValues(int index, bool active, Color color, float velocity, bool updatePos, Vector3 newLocalPosition)
     {
         GameObject cube = points[index].point.transform.GetChild(0).gameObject;
         cube.SetActive(active);
         cube.GetComponent<MeshRenderer>()?.material.SetColor("_Color", color);
-        cube.GetComponent<Rigidbody>().velocity = velocity* cube.transform.forward;
+        cube.GetComponent<Rigidbody>().velocity = velocity * cube.transform.forward;
         if (updatePos)
         {
             cube.transform.localPosition = newLocalPosition;

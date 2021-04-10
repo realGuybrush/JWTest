@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,83 +6,98 @@ using UnityEngine.UI;
 using UnityEditor;
 #endif
 
+public enum PointerMode { Select, Add }
+public enum ViewMode { Top, FirstPerson }
+
 public partial class MainManager : MonoBehaviour
 {
-    bool display1 = true;
-    bool pointerOnUIElement = false;
-    bool manualValueChange = false;
+    private ViewMode viewMode = ViewMode.FirstPerson;
+    private bool pointerOnUIElement = false;
+    private bool manualScrollBarValueChange = false;
+    private PointerMode pointerMode = PointerMode.Add;
     public Scrollbar scrollBar;
     public Button addSelectButton;
     public GameObject changePanel;
     public List<InputField> inputFields;
+
     public void OnMouseClick()
     {
-        Vector3 mos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
-        if (display1)
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
+        if (viewMode== ViewMode.FirstPerson)
         {
-            if (addOrSelect)
+            if (pointerMode == PointerMode.Add)
             {
-                AddPoint(mos);
+                AddPoint(mousePos);
             }
             else
             {
-                SelectPoint(mos);
+                SelectPoint(mousePos);
             }
         }
     }
+
     public void OnScrollBarHandlePress()
     {
         SetTimeFlow(false);
-        manualValueChange = true;
+        manualScrollBarValueChange = true;
     }
+
     public void OnScrollBarHandleRelease()
     {
         if (!paused)
         {
             SetTimeFlow(true);
         }
-        manualValueChange = false;
+        manualScrollBarValueChange = false;
     }
+
     public void OnScrollBarValueChange()
     {
-        if (manualValueChange)
+        if (manualScrollBarValueChange)
         {
             SetTime((int)(scrollBar.value * scrollBar.numberOfSteps));
             scrolledInPause = true;
         }
     }
+
     public void OnPlayButtonPress()
     {
         SetTimeFlow(true);
         paused = false;
     }
+
     public void OnPauseButtonPress()
     {
         SetTimeFlow(false);
         paused = true;
     }
+
     public void OnTopViewPress()
     {
-        display1 = !display1;
-        addSelectButton.gameObject.SetActive(display1);
-        changePanel.SetActive(display1&&!addOrSelect);
-        Camera.main.targetDisplay = display1 ? 0 : 1;
-        camera2.targetDisplay = display1 ? 1 : 0;
+        viewMode = viewMode == ViewMode.FirstPerson ? ViewMode.Top : ViewMode.FirstPerson;
+        addSelectButton.gameObject.SetActive(viewMode == ViewMode.FirstPerson);
+        changePanel.SetActive((viewMode == ViewMode.FirstPerson) && (pointerMode == PointerMode.Select));
+        Camera.main.targetDisplay = viewMode == ViewMode.FirstPerson ? 0 : 1;
+        camera2.targetDisplay = viewMode == ViewMode.FirstPerson ? 1 : 0;
     }
+
     public void OnAddSelectPress()
     {
-        addOrSelect = !addOrSelect;
-        addSelectButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = addOrSelect ? "Add/Se.." : "A/Select";
-        changePanel.SetActive(!addOrSelect);
+        pointerMode = pointerMode == PointerMode.Add ? PointerMode.Select : PointerMode.Add;
+        addSelectButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = pointerMode == PointerMode.Add ? "Add/Se.." : "A/Select";
+        changePanel.SetActive(pointerMode == PointerMode.Select);
     }
+
     public void OnPointerEnterElement()
     {
         pointerOnUIElement = true;
     }
+
     public void OnPointerExitElement()
     {
         pointerOnUIElement = false;
     }
+
     public void OnPositionValueChanged()
     {
         if (selectedPoint > -1)
@@ -118,6 +132,7 @@ public partial class MainManager : MonoBehaviour
             UpdateCube(selectedPoint);
         }
     }
+
     public void OnRotationValueChanged()
     {
         if (selectedPoint > -1)
@@ -152,6 +167,7 @@ public partial class MainManager : MonoBehaviour
             UpdateCube(selectedPoint);
         }
     }
+
     public void OnCreationTimeChanged()
     {
         if (selectedPoint > -1)
@@ -169,6 +185,7 @@ public partial class MainManager : MonoBehaviour
             UpdateCube(selectedPoint);
         }
     }
+
     public void OnDestinationTimeChanged()
     {
         if (selectedPoint > -1)
@@ -186,6 +203,7 @@ public partial class MainManager : MonoBehaviour
             UpdateCube(selectedPoint);
         }
     }
+
     public void OnDeleteButtonPress()
     {
 #if UNITY_EDITOR
@@ -201,7 +219,8 @@ public partial class MainManager : MonoBehaviour
         }
 #endif
     }
-    public void UpdateInputFields()
+
+    private void UpdateInputFields()
     {
         if (selectedPoint > -1)
         {
@@ -219,7 +238,8 @@ public partial class MainManager : MonoBehaviour
             ClearInputFields();
         }
     }
-    public void ClearInputFields()
+
+    private void ClearInputFields()
     {
         for (int i = 0; i < 8; i++)
         {

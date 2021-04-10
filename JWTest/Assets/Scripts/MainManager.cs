@@ -1,18 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using System;
-using UnityEngine.EventSystems;
 
 public partial class MainManager : MonoBehaviour
 {
     public int maxTime = 60;
-    float currentTime = 0;
-    bool paused = false;
-    bool scrolledInPause = false;
-    List<DirectionalPointStruct> points = new List<DirectionalPointStruct>();
-    void Start()
+    private float currentTime = 0;
+    private bool paused = false;
+    private bool scrolledInPause = false;
+    private List<DirectionalPointStruct> points = new List<DirectionalPointStruct>();
+
+    private void Start()
     {
         scrollBar.numberOfSteps = maxTime;
         Camera.main.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, cameraSpeed);
@@ -21,7 +19,7 @@ public partial class MainManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (!pointerOnUIElement)
             { 
@@ -32,7 +30,7 @@ public partial class MainManager : MonoBehaviour
         UpdateCameraPosition();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (currentTime <= maxTime)
         {
@@ -46,8 +44,8 @@ public partial class MainManager : MonoBehaviour
         currentTime = (float)Convert.ToDouble(newTime);
     }
 
-    public void SetTimeFlow(bool go)
+    public void SetTimeFlow(bool on)
     {
-        Time.timeScale = go?1:0;
+        Time.timeScale = on ? 1 : 0;
     }
 }
