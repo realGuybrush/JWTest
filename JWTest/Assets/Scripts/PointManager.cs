@@ -25,24 +25,29 @@ public partial class MainManager : MonoBehaviour
                       true, 
                       new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime))
                       );
+        if (Time.timeScale == 0f)
+        {
+            Time.timeScale = 0.01f;
+            timeShenanigans = true;
+        }
     }
 
-    private void SelectPoint(Vector3 mousePos)
+    private void SelectPoint(Ray mousePos)
     {
-        RaycastHit[] hits = Physics.BoxCastAll(mousePos, new Vector3(0.15f, 0.15f, 0.15f), Camera.main.transform.forward, new Quaternion(), 10f);
-        if (hits.Length > 0)
+        RaycastHit hit;
+        if (Physics.Raycast(mousePos, out hit))
         {
             for (int i = 0; i < points.Count; i++)
             {
-                if (hits[0].collider.gameObject.transform.position == points[i].point.transform.position)
+                if (hit.collider.gameObject.transform.position == points[i].point.transform.position)
                 {
                     selectedPoint = i;
                     UpdateInputFields();
                     return;
                 }
             }
-            ClearInputFields();
         }
+        ClearInputFields();
     }
 
     private void UpdateAllCubes()

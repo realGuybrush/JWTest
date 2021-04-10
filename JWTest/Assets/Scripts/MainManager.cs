@@ -9,6 +9,7 @@ public partial class MainManager : MonoBehaviour
     private bool paused = false;
     private bool scrolledInPause = false;
     private List<DirectionalPointStruct> points = new List<DirectionalPointStruct>();
+    private bool timeShenanigans = false;
 
     private void Start()
     {
@@ -37,6 +38,7 @@ public partial class MainManager : MonoBehaviour
             currentTime += Time.fixedDeltaTime;
             scrollBar.value = currentTime / scrollBar.numberOfSteps;
         }
+        UpdateTime();
     }
 
     public void SetTime(int newTime)
@@ -47,5 +49,14 @@ public partial class MainManager : MonoBehaviour
     public void SetTimeFlow(bool on)
     {
         Time.timeScale = on ? 1 : 0;
+    }
+
+    private void UpdateTime()
+    {
+        if (timeShenanigans)
+        {
+            SetTimeFlow(false);
+            timeShenanigans = false;
+        }
     }
 }

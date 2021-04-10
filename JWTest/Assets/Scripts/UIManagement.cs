@@ -22,16 +22,17 @@ public partial class MainManager : MonoBehaviour
 
     public void OnMouseClick()
     {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
         if (viewMode== ViewMode.FirstPerson)
         {
             if (pointerMode == PointerMode.Add)
             {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
                 AddPoint(mousePos);
             }
             else
             {
-                SelectPoint(mousePos);
+                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 100f));
+                SelectPoint(ray);
             }
         }
     }
