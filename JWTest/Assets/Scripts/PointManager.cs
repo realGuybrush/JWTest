@@ -26,9 +26,11 @@ public partial class MainManager : MonoBehaviour
                       new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime))
                       );
         OnAddSelectPress();
+        selectedPoint = -1;
+        ClearInputFields();
         selectedPoint = points.Count - 1;
         UpdateInputFields();
-        Time.timeScale = 0.001f;
+        Time.timeScale = 0.01f;
         paused = true;
         timeShenanigans = true;
     }
@@ -40,7 +42,8 @@ public partial class MainManager : MonoBehaviour
         {
             for (int i = 0; i < points.Count; i++)
             {
-                if (hit.collider.gameObject.transform.position == points[i].point.transform.position)
+                if ((hit.collider.gameObject.transform.position == points[i].point.transform.position)||
+                    (hit.collider.gameObject.transform.parent?.position == points[i].point.transform.position))
                 {
                     selectedPoint = i;
                     UpdateInputFields();

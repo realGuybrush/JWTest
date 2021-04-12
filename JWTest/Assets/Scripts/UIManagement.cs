@@ -16,7 +16,9 @@ public partial class MainManager : MonoBehaviour
     private bool manualScrollBarValueChange = false;
     private PointerMode pointerMode = PointerMode.Add;
     public Scrollbar scrollBar;
+    public Button topViewButton;
     public Button addSelectButton;
+    public Button playPauseButton;
     public GameObject changePanel;
     public List<InputField> inputFields;
 
@@ -62,20 +64,16 @@ public partial class MainManager : MonoBehaviour
         }
     }
 
-    public void OnPlayButtonPress()
+    public void OnPlayPauseButtonPress()
     {
-        SetTimeFlow(true);
-        paused = false;
-    }
-
-    public void OnPauseButtonPress()
-    {
-        SetTimeFlow(false);
-        paused = true;
+        paused = !paused;
+        SetTimeFlow(!paused);
+        playPauseButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = paused ? ">" : "II";
     }
 
     public void OnTopViewPress()
     {
+        topViewButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = viewMode == ViewMode.FirstPerson ? "Front view" : "Top view";
         viewMode = viewMode == ViewMode.FirstPerson ? ViewMode.Top : ViewMode.FirstPerson;
         addSelectButton.gameObject.SetActive(viewMode == ViewMode.FirstPerson);
         changePanel.SetActive((viewMode == ViewMode.FirstPerson) && (pointerMode == PointerMode.Select));

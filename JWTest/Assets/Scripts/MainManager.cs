@@ -59,7 +59,7 @@ public partial class MainManager : MonoBehaviour
     {
         if (timeShenanigans)
         {
-            SetTimeFlow(false);
+            SetTimeFlow(!paused);
             timeShenanigans = false;
         }
     }
