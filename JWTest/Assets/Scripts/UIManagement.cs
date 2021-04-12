@@ -40,6 +40,7 @@ public partial class MainManager : MonoBehaviour
     public void OnScrollBarHandlePress()
     {
         SetTimeFlow(false);
+        Camera.main.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, cameraSpeed);
         manualScrollBarValueChange = true;
     }
 
@@ -56,7 +57,7 @@ public partial class MainManager : MonoBehaviour
     {
         if (manualScrollBarValueChange)
         {
-            SetTime((int)(scrollBar.value * scrollBar.numberOfSteps));
+            SetTime(scrollBar.value * maxTime);
             scrolledInPause = true;
         }
     }

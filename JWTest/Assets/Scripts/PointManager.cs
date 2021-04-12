@@ -25,11 +25,12 @@ public partial class MainManager : MonoBehaviour
                       true, 
                       new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime))
                       );
-        if (Time.timeScale == 0f)
-        {
-            Time.timeScale = 0.01f;
-            timeShenanigans = true;
-        }
+        OnAddSelectPress();
+        selectedPoint = points.Count - 1;
+        UpdateInputFields();
+        Time.timeScale = 0.001f;
+        paused = true;
+        timeShenanigans = true;
     }
 
     private void SelectPoint(Ray mousePos)

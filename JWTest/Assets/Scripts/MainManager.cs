@@ -13,7 +13,7 @@ public partial class MainManager : MonoBehaviour
 
     private void Start()
     {
-        scrollBar.numberOfSteps = maxTime;
+        scrollBar.numberOfSteps = (int)(maxTime / Time.fixedDeltaTime);
         Camera.main.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, cameraSpeed);
         Physics.IgnoreLayerCollision(0, 0);
     }
@@ -36,14 +36,18 @@ public partial class MainManager : MonoBehaviour
         if (currentTime <= maxTime)
         {
             currentTime += Time.fixedDeltaTime;
-            scrollBar.value = currentTime / scrollBar.numberOfSteps;
+            scrollBar.value = currentTime / maxTime;
+        }
+        else
+        {
+            Camera.main.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
         }
         UpdateTime();
     }
 
-    public void SetTime(int newTime)
+    public void SetTime(float newTime)
     {
-        currentTime = (float)Convert.ToDouble(newTime);
+        currentTime = newTime;
     }
 
     public void SetTimeFlow(bool on)
