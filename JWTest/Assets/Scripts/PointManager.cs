@@ -18,20 +18,19 @@ public partial class MainManager : MonoBehaviour
         points[points.Count - 1].point.transform.position = pos;
         points[points.Count - 1].point.transform.eulerAngles = points[points.Count - 1].rotation;
         int index = points.Count - 1;
-        SetCubeValues(points.Count - 1, 
-                      true, 
+        SetCubeValues(points.Count - 1,
+                      true,
                       Color.white,
                       -10f / (points[index].destinationTime - points[index].creationTime),
-                      true, 
+                      true,
                       new Vector3(0f, 0f, 10f * (points[index].destinationTime - currentTime) / (points[index].destinationTime - points[index].creationTime))
                       );
-        OnAddSelectPress();
+        OnSelectPress();
         selectedPoint = -1;
         ClearInputFields();
         selectedPoint = points.Count - 1;
         UpdateInputFields();
         Time.timeScale = 0.01f;
-        paused = true;
         timeShenanigans = true;
     }
 

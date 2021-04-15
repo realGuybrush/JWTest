@@ -3,7 +3,6 @@ using UnityEngine;
 public partial class MainManager : MonoBehaviour
 {
     public float cameraSpeed = 4.0f;
-    public Camera camera2;
 
     public void UpdateCameraPosition()
     {

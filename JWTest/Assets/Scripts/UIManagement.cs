@@ -14,13 +14,15 @@ public partial class MainManager : MonoBehaviour
     private ViewMode viewMode = ViewMode.FirstPerson;
     private bool pointerOnUIElement = false;
     private bool manualScrollBarValueChange = false;
-    private PointerMode pointerMode = PointerMode.Add;
+    private PointerMode pointerMode = PointerMode.Select;
     public Scrollbar scrollBar;
-    public Button topViewButton;
-    public Button addSelectButton;
+    public Button selectButton;
+    public Button addButton;
     public Button playPauseButton;
     public GameObject changePanel;
     public List<InputField> inputFields;
+    public Text modeText;
+    public Text timeText;
 
     public void OnMouseClick()
     {
@@ -69,23 +71,22 @@ public partial class MainManager : MonoBehaviour
         paused = !paused;
         SetTimeFlow(!paused);
         playPauseButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = paused ? ">" : "II";
+        ChangeSelectAndAddButtonsEnability(paused);
+        changePanel.SetActive(paused && pointerMode == PointerMode.Select);
     }
 
-    public void OnTopViewPress()
+    public void OnSelectPress()
     {
-        topViewButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = viewMode == ViewMode.FirstPerson ? "Front view" : "Top view";
-        viewMode = viewMode == ViewMode.FirstPerson ? ViewMode.Top : ViewMode.FirstPerson;
-        addSelectButton.gameObject.SetActive(viewMode == ViewMode.FirstPerson);
-        changePanel.SetActive((viewMode == ViewMode.FirstPerson) && (pointerMode == PointerMode.Select));
-        Camera.main.targetDisplay = viewMode == ViewMode.FirstPerson ? 0 : 1;
-        camera2.targetDisplay = viewMode == ViewMode.FirstPerson ? 1 : 0;
+        pointerMode = PointerMode.Select;
+        changePanel.SetActive(true);
+        modeText.text = "Mode: select.";
     }
 
-    public void OnAddSelectPress()
+    public void OnAddPress()
     {
-        pointerMode = pointerMode == PointerMode.Add ? PointerMode.Select : PointerMode.Add;
-        addSelectButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = pointerMode == PointerMode.Add ? "Add/Se.." : "A/Select";
-        changePanel.SetActive(pointerMode == PointerMode.Select);
+        pointerMode = PointerMode.Add;
+        changePanel.SetActive(false);
+        modeText.text = "Mode: add.";
     }
 
     public void OnPointerEnterElement()
@@ -245,5 +246,37 @@ public partial class MainManager : MonoBehaviour
         {
             inputFields[i].text = "";
         }
+    }
+
+    private void ChangeSelectAndAddButtonsEnability(bool enabled)
+    {
+        addButton.enabled = paused;
+        SwapButtonColors(addButton);
+        selectButton.enabled = paused;
+        SwapButtonColors(selectButton);
+        if (!enabled)
+        {
+            modeText.text = "Mode: disabled.";
+        }
+        else
+        {
+            if (pointerMode == PointerMode.Add)
+            {
+                modeText.text = "Mode: add.";
+            }
+            else
+            {
+                modeText.text = "Mode: select.";
+            }
+        }
+    }
+
+    private void SwapButtonColors(Button button)
+    {
+        ColorBlock block = button.colors;
+        Color color = block.disabledColor;
+        block.disabledColor = block.normalColor;
+        block.normalColor = color;
+        button.colors = block;
     }
 }

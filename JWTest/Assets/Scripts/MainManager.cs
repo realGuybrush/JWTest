@@ -16,14 +16,15 @@ public partial class MainManager : MonoBehaviour
         scrollBar.numberOfSteps = (int)(maxTime / Time.fixedDeltaTime);
         Camera.main.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, cameraSpeed);
         Physics.IgnoreLayerCollision(0, 0);
+        ChangeSelectAndAddButtonsEnability(false);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (paused && Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (!pointerOnUIElement)
-            { 
+            {
                 OnMouseClick();
             }
         }
@@ -37,6 +38,7 @@ public partial class MainManager : MonoBehaviour
         {
             currentTime += Time.fixedDeltaTime;
             scrollBar.value = currentTime / maxTime;
+            timeText.text = $"Time: {currentTime}.";
         }
         else
         {
@@ -48,6 +50,7 @@ public partial class MainManager : MonoBehaviour
     public void SetTime(float newTime)
     {
         currentTime = newTime;
+        timeText.text = $"Time: {currentTime}.";
     }
 
     public void SetTimeFlow(bool on)
